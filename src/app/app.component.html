@@ -8,6 +8,9 @@
   <mat-tab-group color="primary" (selectedTabChange)="onLinkClick($event)">
     <mat-tab label="Add Project">
       <br/>
+      <div class="col-md-12">
+          <div class="paper">
+              <div class="paper-body">
       <div [formGroup]="projectForm" class="adjust-width">
         <div class="row">
           <mat-form-field class="col-md-8">
@@ -36,7 +39,7 @@
           </mat-form-field>
         </div>
         <div class="row">
-            Priority
+            <label class="col-md-1" >Priority</label>
           <mat-slider class="col-md-8" formControlName="priority" [thumbLabel]="true" [tickInterval]="true" [max]="30" [min]="0"></mat-slider>
         </div>
         <div class="row">
@@ -64,6 +67,9 @@
               </div>
       
         </div>
+        </div>
+              </div>
+              </div>
         <table mat-table [dataSource]="projectData">
           <ng-container matColumnDef="projectName">
             <th mat-header-cell *matHeaderCellDef> Project </th>
@@ -110,6 +116,9 @@
     <!-- ###################################################Task############################################ -->
     <mat-tab label="Add Task"> Add Task 
         <br/>
+        <div class="col-md-12">
+            <div class="paper">
+                <div class="paper-body">
         <div [formGroup]="taskForm" class="adjust-width">
             <div class="row">
                 <mat-form-field class="col-md-6">
@@ -165,7 +174,7 @@
           </div>
         
           <div class="row" *ngIf="!checkboxModel.value1">
-              Priority
+              <label class="col-md-1" >Priority</label>
             <mat-slider class="col-md-8" formControlName="priority" [thumbLabel]="true" [tickInterval]="true" [max]="30" [min]="0"></mat-slider>
           </div>
           <div class="row" *ngIf="!checkboxModel.value1">
@@ -192,6 +201,10 @@
 </div>
         
         </div>
+        </div>
+        </div>
+        </div>
+        
       </mat-tab>
    
    
@@ -199,6 +212,9 @@
    
     <mat-tab label="Add User">
       <br/>
+      <div class="col-md-12">
+      <div class="paper">
+          <div class="paper-body">
       <div [formGroup]="userForm">
         <div class="row">
         <mat-form-field class="col-md-2">
@@ -219,7 +235,9 @@
           <button class="btn btn-info" (click)="userForm?.reset()">RESET</button>
         </div>
         </div>
-
+        </div>
+      </div>
+      </div>
         <table mat-table [dataSource]="userData">
           <ng-container matColumnDef="firstName">
             <th mat-header-cell *matHeaderCellDef> First Name </th>
@@ -258,7 +276,9 @@
       
 
         <br/>
-        
+        <div class="col-md-12">
+            <div class="paper">
+                <div class="paper-body">
         <div [formGroup]="edittaskForm" class="adjust-width" *ngIf="edittaskshow">
          
           <!-- <div class="row">
@@ -305,8 +325,8 @@
           </div>
         
           <div class="row">
-              Priority
-            <mat-slider class="col-md-8" formControlName="priority" [thumbLabel]="true" [tickInterval]="true" [max]="30" [min]="0"></mat-slider>
+              <label class="col-md-1" >Priority</label>
+            <mat-slider class="col-md-6" formControlName="priority" [thumbLabel]="true" [tickInterval]="true" [max]="30" [min]="0"></mat-slider>
           </div>
           <div class="row">
             <mat-form-field class="col-md-6">
@@ -332,7 +352,9 @@
 </div>
         
         </div>
-
+</div>
+</div>
+</div>
         <table mat-table [dataSource]="taskData">
             <ng-container matColumnDef="Task">
               <th mat-header-cell *matHeaderCellDef> Task </th>
