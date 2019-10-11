@@ -30,8 +30,8 @@ interface Employee {
   firstName: string;
   lastName: string;
   employeeId: string;
-  projectId:Project;
-  taskId:Task;
+  //projectId:Project;
+ // taskId:Task;
 }
 
 interface Project {
@@ -59,6 +59,7 @@ interface Task {
 	projectId:Project;
   parentTaskId:ParentTask;
   status:string;
+  userId:Employee;
 }
 
 interface Manager{
@@ -124,8 +125,8 @@ reqModal:RequestModel;
       firstName: [{value: '', disabled: ''}, Validators.required],
       lastName: [{value: '', disabled: ''}, Validators.required],
       employeeId: [{value: '', disabled: ''}, Validators.required],
-      projectId: [{value: null, disabled: ''}],
-      taskId: [{value: null, disabled: ''}],
+      //projectId: [{value: null, disabled: ''}],
+      //taskId: [{value: null, disabled: ''}],
     });
 
     this.projectForm = this.fb.group({
@@ -231,27 +232,27 @@ reqModal:RequestModel;
       console.log(this.taskForm.value);
       this.reqModal=new RequestModel(null,null,null,null,null,null,null);
       this.respModal=new ResponseModel(null,null,null,null,null,null,null);
-     if(this.checkboxModel.value1){
+     if(!this.checkboxModel.value1){
       this.reqModal.extraVariable="parentTask";
      }else{
       this.reqModal.extraVariable="";
      }
       
-      var tempobj=this.taskForm.value;
-      var t=JSON.parse(JSON.stringify(tempobj.userId));
-      this.userlist.push(t);
+      // var tempobj=this.taskForm.value;
+      // var t=JSON.parse(JSON.stringify(tempobj.userId));
+      // this.userlist.push(t);
 
-      this.reqModal.reqList=this.userlist;
-      var taskObj = {taskId:'',parentTaskId:{},projectId:{},task:'',priority:'',taskStartDate:'',taskEndDate:'',status:''};
-      taskObj.parentTaskId=tempobj.parentTaskId;
-      taskObj.projectId=tempobj.projectId;
-      taskObj.task=tempobj.task;
-      taskObj.priority=tempobj.priority;
-      taskObj.taskStartDate=tempobj.taskStartDate;
-      taskObj.taskEndDate=tempobj.taskEndDate;
-      taskObj.status=tempobj.status;
-      this.reqModal.reqObject=JSON.parse(JSON.stringify(taskObj));
-
+      // this.reqModal.reqList=this.userlist;
+      // var taskObj = {taskId:'',parentTaskId:{},projectId:{},task:'',priority:'',taskStartDate:'',taskEndDate:'',status:''};
+      // taskObj.parentTaskId=tempobj.parentTaskId;
+      // taskObj.projectId=tempobj.projectId;
+      // taskObj.task=tempobj.task;
+      // taskObj.priority=tempobj.priority;
+      // taskObj.taskStartDate=tempobj.taskStartDate;
+      // taskObj.taskEndDate=tempobj.taskEndDate;
+      // taskObj.status=tempobj.status;
+      // this.reqModal.reqObject=JSON.parse(JSON.stringify(taskObj));
+      this.reqModal.reqObject=this.taskForm.value;
       this.http.post(this.REST_API_SERVER+'insertTask', this.reqModal).subscribe( (data: any) => {
         this.respModal=data;
         this.taskData =Array.from(this.respModal.respList) ;
@@ -261,17 +262,17 @@ reqModal:RequestModel;
     }
   }
    
- public getUserObjectByTask(task:any):void{
+//  public getUserObjectByTask(task:any):void{
   
-  this.reqModal=new RequestModel(null,null,null,null,null,null,null);
-      this.respModal=new ResponseModel(null,null,null,null,null,null,null);
-      this.reqModal.reqObject=task;
-      this.http.post(this.REST_API_SERVER+'getUserbytid',this.reqModal).subscribe( (data: any) => {
-        this.respModal=data;
-        this.userObj =this.respModal.respObject;
+//   this.reqModal=new RequestModel(null,null,null,null,null,null,null);
+//       this.respModal=new ResponseModel(null,null,null,null,null,null,null);
+//       this.reqModal.reqObject=task;
+//       this.http.post(this.REST_API_SERVER+'getUserbytid',this.reqModal).subscribe( (data: any) => {
+//         this.respModal=data;
+//         this.userObj =this.respModal.respObject;
 
-  });
- }
+//   });
+//  }
   public getTask(): void {
     
       this.reqModal=new RequestModel(null,null,null,null,null,null,null);
@@ -294,9 +295,9 @@ reqModal:RequestModel;
     this.selected=task.projectId.projectId
     this.onProjectChange(task.projectId);
     this.selectedparent=task.parentTaskId.parentTaskId;
-    this.getUserObjectByTask(task);
+    //this.getUserObjectByTask(task);
     // if(this.userObj!==undefined){
-      this.selecteduser=this.userObj;
+      this.selecteduser=task.userId.userId;
     //}
     
   }
@@ -306,12 +307,12 @@ public updateTaskInDb():void{
     console.log(this.edittaskForm.value);
     this.reqModal=new RequestModel(null,null,null,null,null,null,null);
     this.respModal=new ResponseModel(null,null,null,null,null,null,null);
-    var tempobj=this.edittaskForm.value;
+     var tempobj=this.edittaskForm.value;
     
-    var t=tempobj.userId;
-    this.userlist.push(t);
+    // var t=tempobj.userId;
+    // this.userlist.push(t);
     
-    var taskObj = {taskId:'',parentTaskId:{},projectId:{},task:'',priority:'',taskStartDate:'',taskEndDate:'',status:''};
+    var taskObj = {taskId:'',parentTaskId:{},projectId:{},task:'',priority:'',taskStartDate:'',taskEndDate:'',status:'',userId:{}};
     taskObj.taskId=tempobj.taskId;
     taskObj.projectId=tempobj.projectId;
     taskObj.task=tempobj.task;
@@ -319,15 +320,27 @@ public updateTaskInDb():void{
     taskObj.taskStartDate=tempobj.taskStartDate;
     taskObj.taskEndDate=tempobj.taskEndDate;
     taskObj.status=tempobj.status;
-     
+    
     this.parentTaskData.forEach(element => {
       if(element.parentTaskId===tempobj.parentTaskId){
         taskObj.parentTaskId=element;
       }
     });
-    this.reqModal.reqList=this.userlist
-    this.reqModal.reqObject=JSON.parse(JSON.stringify(taskObj));
-
+    if(this.userData.length==0){
+     this.getUsers();
+    }
+    console.log(this.userData);
+    this.userData.forEach(element => {
+     
+      if(element.userId===tempobj.userId){
+        taskObj.userId=element;
+        alert();
+        console.log(element);
+      }
+    });
+   // this.reqModal.reqList=this.userlist
+   this.reqModal.reqObject=JSON.parse(JSON.stringify(taskObj));
+   // this.reqModal.reqObject= this.edittaskForm.value;
     this.http.post(this.REST_API_SERVER+'updateTask', this.reqModal).subscribe( (data: any) => {
       this.respModal=data;
       this.edittaskshow=false;
@@ -404,13 +417,13 @@ public updateTaskInDb():void{
       this.reqModal=new RequestModel(null,null,null,null,null,null,null);
       this.respModal=new ResponseModel(null,null,null,null,null,null,null);
       this.reqModal.reqObject=project;
-      alert("Work in Progress");
-      // this.http.post(this.REST_API_SERVER+'deleteUser', this.reqModal).subscribe( (data: any) => {
-      //   this.respModal=data;
-      //   this.projectData = this.respModal.respList;
-      //   this.projectForm.reset();
-      //   alert(this.respModal.message);
-      // });
+     // alert("Work in Progress");
+      this.http.post(this.REST_API_SERVER+'deleteProject', this.reqModal).subscribe( (data: any) => {
+        this.respModal=data;
+        this.projectData = this.respModal.respList;
+        this.projectForm.reset();
+        alert(this.respModal.message);
+      });
   }
   public updateProject(project: Project): void {
     this.projectForm.patchValue(project);
@@ -421,21 +434,21 @@ public updateTaskInDb():void{
  
 // }
 
-public updateProjectInDB():void{
-  if (this.projectForm.valid) {          
-    console.log("this.projectForm.value");
-    console.log(this.projectForm.value)
-    this.reqModal=new RequestModel(null,null,null,null,null,null,null);
-    this.respModal=new ResponseModel(null,null,null,null,null,null,null);
-    this.reqModal.reqObject=this.projectForm.value;
-    this.http.post(this.REST_API_SERVER+'insertProject', this.reqModal).subscribe( (data: any) => {
-      this.respModal=data;
-      this.projectData = this.respModal.respList;
-      this.projectForm.reset();
-      alert(this.respModal.message);
-    });
-  }
-}
+// public updateProjectInDB():void{
+//   if (this.projectForm.valid) {          
+//     console.log("this.projectForm.value");
+//     console.log(this.projectForm.value)
+//     this.reqModal=new RequestModel(null,null,null,null,null,null,null);
+//     this.respModal=new ResponseModel(null,null,null,null,null,null,null);
+//     this.reqModal.reqObject=this.projectForm.value;
+//     this.http.post(this.REST_API_SERVER+'insertProject', this.reqModal).subscribe( (data: any) => {
+//       this.respModal=data;
+//       this.projectData = this.respModal.respList;
+//       this.projectForm.reset();
+//       alert(this.respModal.message);
+//     });
+//   }
+// }
 public onProjectChange(value:Project):void{
   this.parentTaskData=[];
   this.reqModal=new RequestModel(null,null,null,null,null,null,null);
@@ -464,6 +477,7 @@ public onProjectChange(value:Project):void{
     this.getProjects();
 
   }else if(event.index===1){
+    this.checkboxModel.value1=true;
     this.getUsers();
     this.getProjects();
     
@@ -472,6 +486,7 @@ public onProjectChange(value:Project):void{
   }else if(event.index===3){
     this.edittaskshow=false;
     this.getTask();
+    this.getUsers();
   }
   }
 }
